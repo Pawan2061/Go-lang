@@ -1,33 +1,26 @@
 package main
 
 import (
-	"example/my-go-rest-api/models"
+	"example/my-go-rest-api/database"
 	"example/my-go-rest-api/routes"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
-
-func setupDatabase() {
-	db, err := gorm.Open("postgres", "postgresql://Pawan2061:eTuqbHO0GJD8@ep-icy-fire-a52bon09.us-east-2.aws.neon.tech/go?sslmode=require")
-	if err != nil {
-		panic("failed to connecrt")
-
-	}
-	db.AutoMigrate(&models.User{})
-
-}
 
 func main() {
 
 	router := gin.Default()
+	fmt.Println("_________________________")
+	database.SetupDatabase()
+	fmt.Println("_________________________")
 
-	setupDatabase()
+	router.GET("/", func(c *gin.Context) {
 
-	router.GET("/", func(ctx *gin.Context) {
-		fmt.Println("this is working")
+		c.JSON(200, gin.H{
+			"message": "working server",
+		})
 	})
 	routes.UserRoutes(router)
 	if error := router.Run(); error != nil {
